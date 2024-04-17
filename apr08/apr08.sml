@@ -24,7 +24,7 @@ fun pchar c = print(str(c)^"\n");
 
 (*
 Structures
-an ML structure is a built-in "lirbrary"
+an ML structure is a built-in "library"
 that contains predifined functions that we can import into ML stack
 
 
@@ -80,6 +80,34 @@ fun pbools [] = ()
       Inputs a file and non-negative integer and reads that number of chracters
       from the file and returns thems as a string
 
-    
-  *)
+    TextIo.inputline: instream -> string option    
+      Reads and consumes from the file one line at a time and returns as a
+      string option. 
 
+    TextIO.input1 : instream -> char(aka elem) option
+      Reads and consumes form the file 1 char at time and returns as char
+      option.
+
+    TextIO.lookahead : instream -> char option
+      Reads next character in file but does not consume and returns char option
+
+    FILE WRITING
+    NEW TYPE: outstream
+
+    NEW LIBRARY FUNCTIONS
+      TetxIO.openOUT: string -> outstream
+        Open file for writing 
+
+      TextIO.openAppend : string -> outstream
+        Open a file for appending 
+
+      TextIO.closeOut  outstream -> unit
+        Close a file that was used for writing and returns a void
+
+      TextIO.output : outstream * string -> unit
+        Write string to output file and return unit
+
+      TextIO.stdIn : instream
+      TextIO.stdOut : outstream
+  *)
+  
