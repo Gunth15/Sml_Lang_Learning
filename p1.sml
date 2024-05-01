@@ -1,31 +1,43 @@
 datatype token = INT | MAI | RET | OP | CP | OB | CB | SC | IN of int;
 
-fun filter [] = []
-|filter(#" "::xs) = filter(xs)
-|filter(#"("::xs) = "("::filter(xs)
-|filter(#")"::xs) = ")"::filter(xs)
-|filter(#"{"::xs) = "{"::filter(xs)
-|filter(#"}"::xs) = "}"::filter(xs)
-|filter(#";"::xs) = ";"::filter(xs)
-|filter(x::xs) = implode(x::filter(xs));
+(*finds key words*)
+fun filter [] = [] 
+|filter((#" ")::xs) = filter(xs)
+|filter((#"(")::xs) = OP::filter(xs)
+|filter((#")")::xs) = CP::filter(xs)
+|filter((#"{")::xs) = OB::filter(xs)
+|filter((#"}")::xs) = CP::filter(xs)
+|filter((#";")::xs) = SC::filter(xs)
+|filter((#"i")::(#"n")::(#"t")::(#" ")::xs) = INT::filter(xs)
+|filter((#"m")::(#"a")::(#"i")::(#"n")::xs) = MAI::filter(xs)
+|filter((#"r")::(#"e")::(#"t")::(#"u")::(#"r")::(#"n")::xs) = RET::filter(xs)
+|filter(x::xs) = wordp([x],xs)
+and
+(*parse values*)
+wordp(W,[]) = []
+|wordp(W,(#" ")::xs) = isnum(Int.fromString(implode(rev(W))),xs)
+|wordp(W,(#";")::xs) = isnum(Int.fromString(implode(rev(W))),(#";")::xs)
+|wordp(W,(#")")::xs) = isnum(Int.fromString(implode(rev(W))),(#")")::xs)
+|wordp(W,(#"}")::xs) = isnum(Int.fromString(implode(rev(W))),(#"}")::xs)
+|wordp(W,x::xs) =  wordp(x::W,xs)
+and
+(*find integers*)
+isnum(NONE,_) = []
+|isnum(SOME(x),xs) = IN(x)::filter(xs);
 
-(*
-fun getLn (_,F) = getln(TextIO.inputline(F),F)
-|getLn(SOME(s),F) = filter(explode(s))::getln(TextIO.inputline(F),F); 
+fun getLn (NONE,F) = []
+|getLn(SOME(l),F) = filter(explode(l))@getLn(TextIO.inputLine(F),F); 
 
-fun tokenize [] = []
-|tokenize("int"::xs) = INT::tokenize(xs)
-|tokenize("main"::xs) = MAI::tokenize(xs)
-|tokenize("return"::xs) = RET::tokenize(xs)
-|tokenize("("::xs) = OP::tokenize(xs)
-|tokenize(")"::xs) = CP::tokenize(xs)
-|tokenize("{"::xs) = OB::tokenize(xs)
-|tokenize("}"::xs) = CB::tokenize(xs)
-|tokenize(";"::xs) = SC::tokenize(xs)
-|tokenize(_::xs) = isnum()
+fun parse x =
+let 
+  val F = TextIO.openIn(x)
+  val tokens = getLn(TextIO.inputLine(F),F) 
+  val _ = TextIO.closeIn(F)
+in
+  tokens   
+end;
 
-fun isnum (SOME(Int.fromString(x) as T)::xs) = IN(T) 
-
-fun parse
-  *
-zsh:1: command not found: xdd
+parse("test1.txt");
+parse("test2.txt");
+parse("test3.txt");
+parse("test4.txt");
